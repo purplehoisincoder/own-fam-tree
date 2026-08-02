@@ -18,3 +18,7 @@ Design decisions:
         - include CSS, JS
         - inclde photos - perhaps embed as Data URIs in the HTML file but seems browser have some limitations when reading the photo files in order to get the bytes
         - move detail.html into family-tree.html as a pop-up instead
+
+# License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
