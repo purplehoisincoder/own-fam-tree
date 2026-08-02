@@ -231,9 +231,23 @@
     // Project-relative path (the actual folder the user drops files into).
     var folder = "media/photos/" + id;
     if (hint) {
-      hint.textContent =
-        "Showing photos from folder " + folder +
-        ". Additional photos can be added there.";
+      // Resolve an absolute file:// URL at runtime so source paths stay
+      // relative. Clicking opens the folder (Finder on Safari; an in-browser
+      // directory listing on Chrome/Firefox).
+      var href = new URL(
+        "../media/photos/" + encodeURIComponent(id) + "/",
+        window.location.href
+      ).href;
+      var link = document.createElement("a");
+      link.href = href;
+      link.textContent = folder;
+      link.title = "Open this folder";
+      hint.textContent = "";
+      hint.appendChild(document.createTextNode("Showing photos from folder "));
+      hint.appendChild(link);
+      hint.appendChild(
+        document.createTextNode(". Additional photos can be added there. Name them <number>.[jpg|jpeg|png] where the numbers are 1,2,3,...")
+      );
     }
 
     var dir = "../media/photos/" + encodeURIComponent(id) + "/";

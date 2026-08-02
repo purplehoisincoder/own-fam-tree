@@ -17,15 +17,6 @@ Design decisions:
 - **All paths must stay relative.** No absolute paths, no leading `/`.
 - Must keep working under `file://` across all browsers.
 
-## Data loading (important)
-- The single source of truth is `data/family.js`, which assigns `window.FAMILY_DATA = { ... }`.
-  The object is **pure JSON**; edit it like JSON.
-- It is a **`.js` file, not `.json`, on purpose**: browsers block `fetch()`, `XMLHttpRequest`,
-  and ES-module `import` of local files via `file://` (CORS) in Chrome/Safari/Edge.
-  Loading via `<script src>` is the only cross-browser method. **Do not switch to fetch/JSON.**
-- A clean `.json` is produced **on demand** by the "Download .json" action (a Blob download).
-  The browser cannot write to `data/` directly, so there is no stored `.json` file to keep in sync.
-
 ## Structure & paths
 ```
 family-tree.html          <- ONLY file at root; the one the user clicks
@@ -37,51 +28,18 @@ data/family.js            <- window.FAMILY_DATA (edit data here)
 media/photos/<id>.jpg     <- per-person photos (currently one sample file)
 ```
 - Root file `family-tree.html` references assets as `data/...`, `web/...`, `media/...`.
-- Files in `web/` reference data/media one level up: `../data/...`, `../media/...`.
-  (`detail.html?id=<id>` is the per-person page; it reads `?id` and looks up `FAMILY_DATA`.)
-- Per-page asset naming: `<page>.css` / `<page>.js`. No shared `app.*` file (kept simple/explicit).
+- Per-page asset naming: `<page>.css` / `<page>.js`.
 
-## Main page = pan/zoom family-tree canvas
-- `family-tree.html` shows the tree on a **transform-based infinite canvas** (NOT `<canvas>`):
-  a `#tree-world` div gets `transform: translate()+scale()`; nodes are real DOM `<a>` links
-  (so photos + click-to-detail work), and an SVG layer (`#tree-edges`) draws the connectors.
-  Chosen over `<canvas>` so images/links/hit-testing come for free.
-- Pan = drag, zoom = wheel / +,-,fit buttons. A drag suppresses the following click so panning
-  doesn't navigate. Raw JSON moved into a collapsible `<details>` below the canvas.
-- Layout (`computeLayout` in family-tree.js): parents are derived from the `children` field
-  (reverse lookup), NOT `ancestors` (which lists ALL ancestors). Spouses are grouped into
-  "units" (couples) placed side by side; units form a tree; leaves get columns and parents
-  center over their children. Tune via NODE_W/NODE_H/ROW/COL/COUPLE_GAP constants.
-- Node photo uses the same fallback chain as the detail page (`<id>.jpg` -> sample -> SVG).
+## Data loading (important)
+- The single source of truth is `data/family.js`, which assigns `window.FAMILY_DATA = { ... }`.
+  The object is **pure JSON**; edit it like JSON.
+- It is a **`.js` file, not `.json`, on purpose**: browsers block `fetch()`, `XMLHttpRequest`,
+  and ES-module `import` of local files via `file://` (CORS) in Chrome/Safari/Edge.
+  Loading via `<script src>` is the only cross-browser method. **Do not switch to fetch/JSON.**
+- A clean `.json` is produced **on demand** by the "Download .json" action (a Blob download).
+  The browser cannot write to `data/` directly, so there is no stored `.json` file to keep in sync.
 
-## Photos
-- Detail page tries `media/photos/<id>.jpg`, then falls back to the existing sample photo
-  (`PXL_20260617_003846295.jpg`), then to an inline SVG "No photo" placeholder.
-- To give a person their own photo: drop `media/photos/<their-id>.jpg`.
 
-## Data schema (person)
-`id, first_name, middle_name, last_name, gender, dob (YYYY-MM-DD), birth_country,`
-`children: [id...], spouses: [{ id, date }], info: [{ t?, l? }]`
-- `ancestors` is **deprecated**: nothing reads it (parents come from reverse `children`
-  lookup) and the editor **strips it on save**. Old data may still contain it harmlessly.
-
-## Editing the tree (edit-tree.html)
-- **Single-page editor**: all add/edit/delete happens against an in-memory deep copy of
-  `FAMILY_DATA` within ONE page, so plain JS state survives the whole session — no storage,
-  no cross-page carrier. Leaving without saving discards edits (a `beforeunload` prompt warns).
-  This is deliberate: separate `.html` pages each reload `data/family.js` fresh, so in-memory
-  edits cannot be carried between them; keeping it one page avoids that entirely.
-- **Persistence** = "Save & Download" produces a fresh `data/family.js` (full
-  `window.FAMILY_DATA = {…}` wrapper, `ancestors` dropped) via Blob download; a modal then
-  tells the user to drop it into `data/` (shows the exact path) and reopen the tree. The
-  browser cannot write to `data/` directly, so this manual replace step is unavoidable.
-- **Relationships**: parents are edited by writing this person's id into the chosen parent's
-  `children`; children edit this person's own `children`; spouses are kept symmetric
-  (`{id,date}` on both partners). Delete scrubs the id from everyone's children/spouses.
-- **Entry points**: "Edit tree" in the main actions menu; "Edit" button on `detail.html`
-  links to `edit-tree.html?person=<id>` (auto-selects that person).
-
-## Actions menu (main page, top-right)
-- "Edit tree" — opens the single-page editor (`web/edit-tree.html`).
-- "Download .json" — active (Blob download of pure JSON).
-- "Download GEDCOM" / "Backup" — disabled placeholders ("Coming soon"). Wire these up when ready.
+WHEN EDITING THIS FILE:
+  - Be brief
+  - Only add architectural/design decisions that add value and are hard to deduce from code

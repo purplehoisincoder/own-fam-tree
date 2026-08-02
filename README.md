@@ -13,4 +13,8 @@ Design decisions:
 
 # To Do
 
-- Better experience in mobile (e.g. generate single HTML file that can be shared on messaging apps)
+- Better experience in mobile:
+    - Potentially: generate single HTML file that can be shared on messaging apps. Currently we have different files for tree and detail page, each with its own .css and .js files but that makes things harder for mobile sharing.
+        - include CSS, JS
+        - inclde photos - perhaps embed as Data URIs in the HTML file but seems browser have some limitations when reading the photo files in order to get the bytes
+        - move detail.html into family-tree.html as a pop-up instead
