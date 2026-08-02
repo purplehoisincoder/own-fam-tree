@@ -1,14 +1,18 @@
-# AGENTS.md
+# Own Family Tree
 
-Guidance for future edits. Read before changing structure, data loading, or paths.
-
-## What this is
 A **local-first** family tree viewer: plain HTML + CSS + JS, **no server, no build step**.
-Designed to be opened by double-clicking via `file://` and to run in **all browsers**
-(Chrome, Safari, Firefox, Edge), offline. The whole folder is copyable SD-card to SD-card.
+Designed to be opened by clicking family-tree.html.
+
+Design decisions:
+- Local first. Self contained inside a folder/directory.
+- Runs on a browser without a server.
+- The folder is copyable to facilitate permanent storage and sharing (e.g. via SD card)
+- Supports rich media: audio, photo, video, links and informational texts.
+- Coming soon: ability to back up to a server.
+- Coming soon: developer friendly: ability to customize it + API
 
 ## Hard constraints (do not break)
-- **No server / no build tooling.** It must work by double-clicking the entry HTML.
+- **No server / no build tooling.** It must launch by double-clicking the family-tree.html file.
 - **All paths must stay relative.** No absolute paths, no leading `/`.
 - Must keep working under `file://` across all browsers.
 
