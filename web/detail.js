@@ -95,6 +95,8 @@
   }
 
   function showError(msg) {
+    var editLink = document.getElementById("edit-person");
+    if (editLink) editLink.hidden = true;
     document.getElementById("person-name").textContent = "Not found";
     var panel = document.getElementById("panel-info");
     if (panel) {
@@ -276,6 +278,9 @@
     showError('No person found with id "' + id + '".');
     return;
   }
+
+  var editLink = document.getElementById("edit-person");
+  if (editLink) editLink.href = "edit-tree.html?person=" + encodeURIComponent(id);
 
   document.title = fullName(person) + " \u2014 Family Tree";
   document.getElementById("person-name").textContent = fullName(person);

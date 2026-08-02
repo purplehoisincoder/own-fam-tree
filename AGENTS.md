@@ -8,6 +8,7 @@ Design decisions:
 - Runs on a browser without a server.
 - The folder is copyable to facilitate permanent storage and sharing (e.g. via SD card)
 - Supports rich media: audio, photo, video, links and informational texts.
+- No build/compile step
 - Coming soon: ability to back up to a server.
 - Coming soon: developer friendly: ability to customize it + API
 
@@ -31,6 +32,7 @@ family-tree.html          <- ONLY file at root; the one the user clicks
 web/                      <- all other html/css/js live here
   family-tree.css / .js   <- main page assets
   detail.html / .css / .js
+  edit-tree.html/.css/.js <- single-page tree editor (add/edit/delete people)
 data/family.js            <- window.FAMILY_DATA (edit data here)
 media/photos/<id>.jpg     <- per-person photos (currently one sample file)
 ```
@@ -59,8 +61,27 @@ media/photos/<id>.jpg     <- per-person photos (currently one sample file)
 
 ## Data schema (person)
 `id, first_name, middle_name, last_name, gender, dob (YYYY-MM-DD), birth_country,`
-`ancestors: [id...], children: [id...], spouses: [{ id, date }]`
+`children: [id...], spouses: [{ id, date }], info: [{ t?, l? }]`
+- `ancestors` is **deprecated**: nothing reads it (parents come from reverse `children`
+  lookup) and the editor **strips it on save**. Old data may still contain it harmlessly.
+
+## Editing the tree (edit-tree.html)
+- **Single-page editor**: all add/edit/delete happens against an in-memory deep copy of
+  `FAMILY_DATA` within ONE page, so plain JS state survives the whole session — no storage,
+  no cross-page carrier. Leaving without saving discards edits (a `beforeunload` prompt warns).
+  This is deliberate: separate `.html` pages each reload `data/family.js` fresh, so in-memory
+  edits cannot be carried between them; keeping it one page avoids that entirely.
+- **Persistence** = "Save & Download" produces a fresh `data/family.js` (full
+  `window.FAMILY_DATA = {…}` wrapper, `ancestors` dropped) via Blob download; a modal then
+  tells the user to drop it into `data/` (shows the exact path) and reopen the tree. The
+  browser cannot write to `data/` directly, so this manual replace step is unavoidable.
+- **Relationships**: parents are edited by writing this person's id into the chosen parent's
+  `children`; children edit this person's own `children`; spouses are kept symmetric
+  (`{id,date}` on both partners). Delete scrubs the id from everyone's children/spouses.
+- **Entry points**: "Edit tree" in the main actions menu; "Edit" button on `detail.html`
+  links to `edit-tree.html?person=<id>` (auto-selects that person).
 
 ## Actions menu (main page, top-right)
+- "Edit tree" — opens the single-page editor (`web/edit-tree.html`).
 - "Download .json" — active (Blob download of pure JSON).
 - "Download GEDCOM" / "Backup" — disabled placeholders ("Coming soon"). Wire these up when ready.

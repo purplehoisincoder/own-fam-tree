@@ -18,6 +18,10 @@ body {
 }
 
 .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 14px 20px;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
@@ -31,6 +35,19 @@ body {
   font-size: 0.95rem;
 }
 .back:hover { text-decoration: underline; }
+
+.edit-link {
+  padding: 7px 16px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.edit-link:hover { background: #1d4ed8; }
+.edit-link[hidden] { display: none; }
 
 main {
   width: 75%;

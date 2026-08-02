@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Family Tree</title>
+  <!-- This file lives in web/, so data/media paths step up one level (../). -->
+  <link rel="stylesheet" href="edit-tree.css">
+  <!-- Data source: loaded as a script so it works via file:// in all browsers. -->
+  <script src="../data/family.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="../family-tree.html">&larr; Back to tree</a>
+    <h1>Edit Family Tree</h1>
+    <button id="save-btn" class="save-btn" type="button">Save &amp; Download</button>
+  </header>
+
+  <main class="editor">
+    <!-- Left: searchable list of everyone in the tree. -->
+    <aside class="people-pane">
+      <div class="people-toolbar">
+        <input id="search" class="search" type="search" placeholder="Search by name&hellip;"
+               autocomplete="off" aria-label="Search people by name">
+        <button id="add-person" class="add-person" type="button">&plus; Add person</button>
+      </div>
+      <ul id="people-list" class="people-list"></ul>
+    </aside>
+
+    <!-- Right: edit form for the selected person. -->
+    <section class="form-pane" id="form-pane">
+      <p class="empty-hint">Select a person on the left to edit, or add a new one.</p>
+    </section>
+  </main>
+
+  <!-- Post-download instructions (shown after Save &amp; Download). -->
+  <div id="save-modal" class="save-modal" hidden>
+    <div class="save-card" role="dialog" aria-modal="true" aria-labelledby="save-title">
+      <h2 id="save-title">Almost done &mdash; one manual step</h2>
+      <p>
+        Your browser just downloaded a fresh <code>family.js</code>
+        (check your <strong>Downloads</strong> folder).
+        To make the changes permanent, replace the project's data file with it:
+      </p>
+      <ol class="save-steps">
+        <li>Open your Downloads folder and find <code>family.js</code>.</li>
+        <li>
+          Move it into this project's <code>data</code> folder, replacing the file that's there:
+          <code id="data-path" class="folder-path">&hellip;</code>
+        </li>
+        <li>Reopen <code>family-tree.html</code> to see your changes (or refresh the page).</li>
+      </ol>
+      <p class="save-note">
+        Until you replace the file, your edits live only in this tab.
+      </p>
+      <div class="save-actions">
+        <button id="save-again" class="btn-secondary" type="button">Download again</button>
+        <button id="save-close" class="btn-primary" type="button">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="edit-tree.js"></script>
+</body>
+</html>
