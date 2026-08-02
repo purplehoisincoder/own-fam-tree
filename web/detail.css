@@ -33,50 +33,194 @@ body {
 .back:hover { text-decoration: underline; }
 
 main {
-  max-width: 880px;
+  width: 75%;
+  max-width: none;
   margin: 0 auto;
-  padding: 24px 20px 60px;
+  padding: 32px 20px 60px;
+}
+@media (max-width: 600px) {
+  main { width: 95%; }
 }
 
-h1 { margin: 0 0 20px; font-size: 1.4rem; }
-h2 { margin: 0 0 8px; font-size: 1.05rem; }
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 24px;
-  align-items: start;
-}
-@media (max-width: 620px) {
-  .detail-grid { grid-template-columns: 1fr; }
+/* Keep the 4 tabs on a single line on small screens. */
+@media (max-width: 600px) {
+  .tab-bar { flex-wrap: nowrap; gap: 1px; padding: 4px; }
+  .tab { padding: 8px 4px; font-size: 0.78rem; }
 }
 
+/* ---- Centered profile (photo + name) ---- */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+}
 .photo {
   margin: 0;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e5e7eb;
+  border: 4px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
 }
 .photo img {
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 6px;
-  background: #eee;
-  min-height: 120px;
+  height: 100%;
+  object-fit: cover;
+}
+h1 {
+  margin: 16px 0 0;
+  font-size: 1.5rem;
 }
 
-.raw-json {
-  background: #0f172a;
-  color: #e2e8f0;
-  padding: 16px;
-  border-radius: 10px;
-  overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.82rem;
-  white-space: pre;
+.bio {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.relations {
+  margin: 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+.rel-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.rel-row dt {
+  font-weight: 600;
+  color: var(--muted);
+}
+.rel-row dt::after { content: ":"; }
+.rel-row dd { margin: 0; }
+.rel-row dd a,
+.rel-row dd a:visited {
+  color: var(--text);
+  text-decoration: none;
+}
+.rel-row dd a:hover { text-decoration: underline; }
+.rel-row dd.is-unavailable { color: var(--muted); }
+
+/* ---- Tabs ---- */
+.tabs {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.tab {
+  flex: 1 1 auto;
+  padding: 9px 14px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tab:hover { background: #ececea; color: var(--text); }
+.tab.is-active {
+  background: var(--panel);
+  color: var(--accent);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+.tab-panel {
+  padding: 24px 20px;
+  min-height: 160px;
+}
+.tab-panel[hidden] { display: none; }
+
+.placeholder {
   margin: 0;
+  color: var(--muted);
+  text-align: center;
 }
 
 .error { color: #b91c1c; }
+
+/* ---- Info tab ---- */
+.info-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.info-bit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+.info-text { flex: 1; }
+.info-link {
+  margin-left: auto;          /* right-align even when there is no text */
+  flex: none;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.info-link:hover { text-decoration: underline; }
+
+/* ---- Photos tab ---- */
+.photo-hint {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .photo-grid { grid-template-columns: 1fr; }
+}
+
+.photo-tile {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #e5e7eb;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.photo-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}
+.photo-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

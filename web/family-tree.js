@@ -15,7 +15,7 @@
   var COUPLE_GAP = 140;  // horizontal distance between spouses in a couple
   var PAD = 100;         // padding around the whole tree
 
-  var FALLBACK_PHOTO = "media/photos/PXL_20260617_003846295.jpg";
+  var FALLBACK_PHOTO = "media/photos/no-photo.svg";
   var PLACEHOLDER =
     "data:image/svg+xml;utf8," +
     encodeURIComponent(
@@ -184,6 +184,10 @@
       return (
         '<a class="node" href="web/detail.html?id=' + encodeURIComponent(p.id) + '"' +
           ' data-gender="' + escapeHtml(p.gender || "") + '"' +
+          ' data-name="' + escapeHtml(fullName(p)) + '"' +
+          ' data-id="' + escapeHtml(p.id) + '"' +
+          ' data-dob="' + escapeHtml(p.dob || "") + '"' +
+          ' data-country="' + escapeHtml(p.birth_country || "") + '"' +
           ' style="left:' + left + 'px; top:' + top + 'px; width:' + NODE_W + 'px;">' +
           '<span class="node-photo">' +
             '<img alt="' + escapeHtml(fullName(p)) + '" ' +
@@ -191,7 +195,6 @@
                  'data-fallback="0">' +
           '</span>' +
           '<span class="node-name">' + escapeHtml(fullName(p)) + '</span>' +
-          '<span class="node-id">' + escapeHtml(p.id) + '</span>' +
         '</a>'
       );
     }).join("");
@@ -205,6 +208,74 @@
         else if (step === "1") { img.setAttribute("data-fallback", "2"); img.src = PLACEHOLDER; }
       });
     });
+  }
+
+  // ---- Hover tooltip ---------------------------------------------------
+  // A position:fixed card that follows the cursor. Fixed positioning keeps it
+  // immune to the pan/zoom transform applied to #tree-world.
+  function setupTooltip() {
+    var nodesEl = document.getElementById("tree-nodes");
+    var tip = document.getElementById("node-tip");
+    var GAP = 14; // distance from cursor
+
+    function move(e) {
+      var w = tip.offsetWidth, h = tip.offsetHeight;
+      var x = e.clientX + GAP, y = e.clientY + GAP;
+      // Keep the card within the viewport.
+      if (x + w + 4 > window.innerWidth) x = e.clientX - GAP - w;
+      if (y + h + 4 > window.innerHeight) y = e.clientY - GAP - h;
+      tip.style.left = Math.max(4, x) + "px";
+      tip.style.top = Math.max(4, y) + "px";
+    }
+    // "1948-03-12" -> "12 Mar 1948". Falls back to the raw value if it doesn't
+    // match the expected YYYY-MM-DD shape (e.g. partial or unknown dates).
+    var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    function friendlyDate(dob) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dob || "");
+      if (!m) return dob || "";
+      var mon = MONTHS[parseInt(m[2], 10) - 1];
+      if (!mon) return dob;
+      return parseInt(m[3], 10) + " " + mon + " " + m[1];
+    }
+    function show(node, e) {
+      tip.innerHTML =
+        '<span class="tip-name"></span>' +
+        '<span class="tip-meta tip-dob"></span>' +
+        '<span class="tip-meta tip-country"></span>' +
+        '<span class="tip-id"></span>' +
+        '<span class="tip-cta">Click for details</span>';
+      tip.querySelector(".tip-name").textContent = node.getAttribute("data-name") || "";
+
+      var dob = friendlyDate(node.getAttribute("data-dob"));
+      var dobEl = tip.querySelector(".tip-dob");
+      if (dob) { dobEl.textContent = "Born: " + dob; } else { dobEl.hidden = true; }
+
+      var country = node.getAttribute("data-country") || "";
+      var countryEl = tip.querySelector(".tip-country");
+      if (country) { countryEl.textContent = "Country: " + country; } else { countryEl.hidden = true; }
+
+      tip.querySelector(".tip-id").textContent = "ID: " + (node.getAttribute("data-id") || "");
+      tip.hidden = false;
+      move(e);
+    }
+    function hide() { tip.hidden = true; }
+
+    nodesEl.addEventListener("mouseover", function (e) {
+      var node = e.target.closest(".node");
+      if (node) show(node, e);
+    });
+    nodesEl.addEventListener("mousemove", function (e) {
+      if (!tip.hidden) move(e);
+    });
+    nodesEl.addEventListener("mouseout", function (e) {
+      var node = e.target.closest(".node");
+      if (node && !node.contains(e.relatedTarget)) hide();
+    });
+    // Hide while panning so it doesn't linger over the canvas.
+    document.getElementById("tree-viewport")
+      .addEventListener("pointerdown", hide);
+
+    return { hide: hide };
   }
 
   // ---- Pan / zoom (Figma/n8n-style infinite canvas) -------------------
@@ -319,6 +390,69 @@
     document.getElementById("download-json").addEventListener("click", function () {
       downloadJson(); close();
     });
+    setupFolderControls();
+  }
+
+  // Project folder: show the path (from the file:// location), copy it, or
+  // pop the native folder picker. Browsers can't open Finder/Explorer or aim
+  // the picker at this folder, so the displayed path is the reliable bit.
+  function projectFolderPath() {
+    var p = "";
+    try { p = decodeURIComponent(location.pathname); } catch (e) { p = location.pathname; }
+    p = p.replace(/\/[^\/]*$/, "");           // strip the html filename
+    if (/^\/[A-Za-z]:\//.test(p)) p = p.slice(1); // Windows: /C:/... -> C:/...
+    if (/^[A-Za-z]:/.test(p)) p = p.replace(/\//g, "\\"); // Windows backslashes
+    return p || "(unknown)";
+  }
+
+  // The file:// URL of the folder (for the "Open" button / new tab).
+  function projectFolderUrl() {
+    return location.href.replace(/[^\/]*$/, "");
+  }
+
+  function setupFolderControls() {
+    var pathEl = document.getElementById("folder-path");
+    var copyBtn = document.getElementById("copy-folder");
+    var openBtn = document.getElementById("open-folder");
+    if (!pathEl) return;
+
+    var path = projectFolderPath();
+    pathEl.textContent = path;
+
+    if (copyBtn) {
+      copyBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        copyText(path);
+        var prev = copyBtn.textContent;
+        copyBtn.textContent = "Copied";
+        setTimeout(function () { copyBtn.textContent = prev; }, 1200);
+      });
+    }
+    if (openBtn) {
+      openBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        window.open(projectFolderUrl(), "_blank");
+      });
+    }
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function () { copyTextFallback(text); });
+    } else {
+      copyTextFallback(text);
+    }
+  }
+
+  function copyTextFallback(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
   }
 
   function downloadJson() {
@@ -333,10 +467,15 @@
 
   // ---- Init ------------------------------------------------------------
   setupMenu();
+  if (data && data["tree-name"]) {
+    var title = "Family Tree of " + data["tree-name"];
+    document.getElementById("tree-title").textContent = title;
+    document.title = title;
+  }
   if (data && Array.isArray(data.people) && data.people.length) {
-    document.getElementById("raw-json").textContent = JSON.stringify(data, null, 2);
     var layout = computeLayout(data.people);
     renderTree(layout);
+    setupTooltip();
     setupPanZoom(layout);
   } else {
     document.getElementById("tree-nodes").innerHTML =

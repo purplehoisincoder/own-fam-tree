@@ -10,6 +10,7 @@
 
 window.FAMILY_DATA =
 {
+  "tree-name": "Example Family",
   "people": [
     {
       "id": "1001",
@@ -18,7 +19,7 @@ window.FAMILY_DATA =
       "last_name": "Carter",
       "gender": "male",
       "dob": "1948-03-12",
-      "birth_country": "United States",
+      "birth_country": "Argentina",
       "ancestors": [],
       "children": ["2001", "2002"],
       "spouses": [
@@ -26,6 +27,11 @@ window.FAMILY_DATA =
           "id": "1002",
           "date": "1971-06-19"
         }
+      ],
+      "info": [
+        { "t": "Loved fishing on weekends", "l": "webbu.app" },
+        { "t": "Served in the Navy", "l": "fakelink.com" },
+        { "l": "webbu.app" }
       ]
     },
     {
@@ -35,7 +41,7 @@ window.FAMILY_DATA =
       "last_name": "Carter",
       "gender": "female",
       "dob": "1950-09-27",
-      "birth_country": "United States",
+      "birth_country": "Italy",
       "ancestors": [],
       "children": ["2001", "2002"],
       "spouses": [
@@ -43,6 +49,10 @@ window.FAMILY_DATA =
           "id": "1001",
           "date": "1971-06-19"
         }
+      ],
+      "info": [
+        { "t": "Made the best apple pie", "l": "fakelink.com" },
+        { "t": "Taught piano for 30 years", "l": "webbu.app" }
       ]
     },
     {
@@ -52,14 +62,20 @@ window.FAMILY_DATA =
       "last_name": "Carter",
       "gender": "male",
       "dob": "1976-01-08",
-      "birth_country": "United States",
+      "birth_country": "Canada",
       "ancestors": ["1001", "1002"],
-      "children": ["3001", "3002"],
+      "children": ["3001", "3002", "3003"],
       "spouses": [
         {
           "id": "2003",
           "date": "2002-04-13"
         }
+      ],
+      "info": [
+        { "t": "Played basketball in college" },
+        { "t": "Liked strawberry icecream" },
+        { "t": "Works as a software engineer", "l": "fakelink.com" },
+        { "l": "fakelink.com" }
       ]
     },
     {
@@ -69,10 +85,15 @@ window.FAMILY_DATA =
       "last_name": "Carter",
       "gender": "female",
       "dob": "1979-11-21",
-      "birth_country": "United States",
+      "birth_country": "Australia",
       "ancestors": ["1001", "1002"],
       "children": [],
-      "spouses": []
+      "spouses": [],
+      "info": [
+        { "t": "Avid hiker", "l": "webbu.app" },
+        { "t": "Studied marine biology" },
+        { "l": "fakelink.com" }
+      ]
     },
     {
       "id": "2003",
@@ -83,12 +104,16 @@ window.FAMILY_DATA =
       "dob": "1978-07-14",
       "birth_country": "Mexico",
       "ancestors": [],
-      "children": ["3001", "3002"],
+      "children": ["3001", "3002", "3003"],
       "spouses": [
         {
           "id": "2001",
           "date": "2002-04-13"
         }
+      ],
+      "info": [
+        { "t": "Grew up in Mexico City", "l": "webbu.app" },
+        { "t": "Speaks three languages", "l": "fakelink.com" }
       ]
     },
     {
@@ -98,10 +123,14 @@ window.FAMILY_DATA =
       "last_name": "Carter",
       "gender": "female",
       "dob": "2006-05-03",
-      "birth_country": "United States",
+      "birth_country": "Spain",
       "ancestors": ["1001", "1002", "2001", "2003"],
       "children": [],
-      "spouses": []
+      "spouses": [],
+      "info": [
+        { "t": "Captain of the soccer team" },
+        { "t": "Loves painting" }
+      ]
     },
     {
       "id": "3002",
@@ -110,10 +139,30 @@ window.FAMILY_DATA =
       "last_name": "Carter",
       "gender": "male",
       "dob": "2009-10-18",
-      "birth_country": "United States",
+      "birth_country": "Japan",
       "ancestors": ["1001", "1002", "2001", "2003"],
       "children": [],
-      "spouses": []
+      "spouses": [],
+      "info": [
+        { "t": "Builds Lego spaceships" },
+        { "t": "Plays the drums" }
+      ]
+    },
+    {
+      "id": "3003",
+      "first_name": "Alex",
+      "middle_name": "Jordan",
+      "last_name": "Carter",
+      "gender": "other",
+      "dob": "2013-02-27",
+      "birth_country": "Brazil",
+      "ancestors": ["1001", "1002", "2001", "2003"],
+      "children": [],
+      "spouses": [],
+      "info": [
+        { "t": "Collects comic books" },
+        { "t": "Wants to be an astronaut" }
+      ]
     }
   ]
 };

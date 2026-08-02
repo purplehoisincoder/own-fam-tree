@@ -14,18 +14,39 @@
   </header>
 
   <main>
-    <h1 id="person-name">Person</h1>
-
-    <div class="detail-grid">
+    <div class="profile">
       <figure class="photo">
         <img id="person-photo" alt="Photo">
       </figure>
-
-      <section>
-        <h2>Details</h2>
-        <pre id="person-json" class="raw-json"></pre>
-      </section>
+      <h1 id="person-name">Person</h1>
+      <p id="person-bio" class="bio"></p>
+      <dl class="relations">
+        <div class="rel-row"><dt>Parents</dt><dd id="person-parents"></dd></div>
+        <div class="rel-row"><dt>Children</dt><dd id="person-children"></dd></div>
+      </dl>
     </div>
+
+    <section class="tabs" aria-label="Person details">
+      <div class="tab-bar" role="tablist">
+        <button class="tab is-active" role="tab" aria-selected="true"
+                data-tab="media" id="tab-media" aria-controls="panel-media">Photos/Videos</button>
+        <button class="tab" role="tab" aria-selected="false"
+                data-tab="info" id="tab-info" aria-controls="panel-info">Info/Links</button>
+        <button class="tab" role="tab" aria-selected="false"
+                data-tab="audio" id="tab-audio" aria-controls="panel-audio">Audio</button>
+      </div>
+
+      <div class="tab-panel is-active" role="tabpanel" id="panel-media" aria-labelledby="tab-media" data-tab="media">
+        <p class="photo-hint" id="photo-hint"></p>
+        <div class="photo-grid" id="photo-grid"></div>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="panel-info" aria-labelledby="tab-info" data-tab="info" hidden>
+        <p class="placeholder">Info will appear here.</p>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="panel-audio" aria-labelledby="tab-audio" data-tab="audio" hidden>
+        <p class="placeholder">Audio will appear here.</p>
+      </div>
+    </section>
   </main>
 
   <script src="detail.js"></script>

@@ -9,6 +9,7 @@
   --edge: #b8bfc9;
   --male: #2563eb;
   --female: #db2777;
+  --other: #9ca3af;
 }
 
 * { box-sizing: border-box; }
@@ -19,6 +20,9 @@ body {
   color: var(--text);
   background: var(--bg);
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .topbar {
@@ -48,24 +52,55 @@ body {
   margin: 0; padding: 6px; list-style: none;
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12);
-  min-width: 220px; z-index: 30;
+  min-width: 260px; z-index: 30;
 }
 .actions-menu[hidden] { display: none; }
-.actions-menu button {
-  display: block; width: 100%; text-align: left;
+.actions-menu > li > button,
+.actions-menu > li > a {
+  display: block; width: 100%; text-align: left; box-sizing: border-box;
   padding: 9px 12px; border: none; background: none;
-  border-radius: 6px; font-size: .95rem; color: var(--text); cursor: pointer;
+  border-radius: 6px; font-size: .95rem; color: var(--text);
+  cursor: pointer; text-decoration: none;
 }
-.actions-menu button:hover:not(:disabled) { background: #f0f0ee; }
-.actions-menu button:disabled { color: var(--muted); cursor: default; }
+.actions-menu > li > button:hover:not(:disabled),
+.actions-menu > li > a:hover { background: #f0f0ee; }
+.actions-menu > li > button:disabled { color: var(--muted); cursor: default; }
 .soon { font-size: .8rem; color: var(--muted); }
 
-main { padding: 16px; }
+.menu-sep {
+  height: 0; margin: 6px 4px;
+  border-top: 1px solid var(--border);
+}
+.menu-folder { padding: 6px 12px 8px; }
+.menu-label { font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+.folder-path {
+  display: block; font-size: .8rem; color: var(--text);
+  background: #f3f3f1; border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 7px; word-break: break-all; line-height: 1.35;
+}
+.folder-actions { display: flex; gap: 6px; margin-top: 6px; }
+.folder-actions button {
+  flex: 1; padding: 6px 8px; font-size: .85rem;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--panel); color: var(--text); cursor: pointer;
+}
+.folder-actions button:hover { background: #f0f0ee; }
+.menu-version {
+  padding: 8px 12px 4px; text-align: center;
+  font-size: .8rem; color: var(--muted);
+}
+
+main {
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
 
 /* ---- Pan/zoom canvas ---- */
 .tree-viewport {
   position: relative;
-  height: 72vh;
+  flex: 1;
   min-height: 420px;
   background: var(--canvas);
   /* subtle dot grid like node editors */
@@ -116,6 +151,7 @@ main { padding: 16px; }
 }
 .node[data-gender="male"] .node-photo { border-color: var(--male); }
 .node[data-gender="female"] .node-photo { border-color: var(--female); }
+.node[data-gender="other"] .node-photo { border-color: var(--other); }
 .node-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .node-name {
@@ -125,11 +161,6 @@ main { padding: 16px; }
   text-align: center;
   line-height: 1.15;
   max-width: 118px;
-}
-.node-id {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: .68rem;
-  color: var(--muted);
 }
 .node:hover .node-photo {
   box-shadow: 0 0 0 3px rgba(37,99,235,.25), 0 2px 6px rgba(0,0,0,.12);
@@ -164,14 +195,39 @@ main { padding: 16px; }
   pointer-events: none;
 }
 
-/* ---- Raw data ---- */
-.raw-section { margin-top: 16px; }
-.raw-section summary {
-  cursor: pointer; font-weight: 600; padding: 8px 4px; color: var(--text);
+/* ---- Hover tooltip ---- */
+.node-tip {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 240px;
+  padding: 8px 11px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.16);
+  pointer-events: none;
 }
-.raw-json {
-  background: #0f172a; color: #e2e8f0;
-  padding: 16px; border-radius: 10px; overflow-x: auto;
+.node-tip[hidden] { display: none; }
+.node-tip .tip-name {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.node-tip .tip-meta {
+  font-size: .78rem;
+  color: var(--text);
+}
+.node-tip .tip-id {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: .82rem; white-space: pre; margin: 8px 0 0;
+  font-size: .72rem;
+  color: var(--muted);
+}
+.node-tip .tip-cta {
+  margin-top: 3px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--accent);
 }

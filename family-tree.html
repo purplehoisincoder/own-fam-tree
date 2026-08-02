@@ -11,13 +11,24 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>Family Tree</h1>
+    <h1 id="tree-title">Family Tree</h1>
     <div class="actions">
       <button id="actions-btn" class="actions-btn" aria-haspopup="true" aria-expanded="false" title="Actions">&#8942;</button>
       <ul id="actions-menu" class="actions-menu" hidden>
         <li><button id="download-json" type="button">Download .json</button></li>
         <li><button type="button" disabled>Download GEDCOM <span class="soon">(Coming soon)</span></button></li>
         <li><button type="button" disabled>Backup <span class="soon">(Coming soon)</span></button></li>
+        <li><a id="contribute-link" href="https://github.com/fersarr/ownfamtree" target="_blank" rel="noopener noreferrer">Contribute</a></li>
+        <li class="menu-sep" role="separator"></li>
+        <li class="menu-folder">
+          <div class="menu-label">Folder</div>
+          <code id="folder-path" class="folder-path" title="Folder this tree is running from"></code>
+          <div class="folder-actions">
+            <button id="copy-folder" type="button">Copy</button>
+            <button id="open-folder" type="button">Open</button>
+          </div>
+        </li>
+        <li class="menu-version">v1.0.0</li>
       </ul>
     </div>
   </header>
@@ -38,10 +49,8 @@
       <p class="tree-hint">Drag to move &middot; scroll to zoom &middot; click a person to open their page</p>
     </div>
 
-    <details class="raw-section">
-      <summary>Raw data (JSON)</summary>
-      <pre id="raw-json" class="raw-json"></pre>
-    </details>
+    <!-- Hover tooltip (position:fixed, follows the cursor). -->
+    <div id="node-tip" class="node-tip" hidden></div>
   </main>
 
   <script src="web/family-tree.js"></script>
