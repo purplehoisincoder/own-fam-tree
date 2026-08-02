@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Tree</title>
+  <!-- Paths are relative to the repo root (this file lives at the root). -->
+  <link rel="stylesheet" href="web/family-tree.css">
+  <!-- Data source: loaded as a script so it works via file:// in all browsers. -->
+  <script src="data/family.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Family Tree</h1>
+    <div class="actions">
+      <button id="actions-btn" class="actions-btn" aria-haspopup="true" aria-expanded="false" title="Actions">&#8942;</button>
+      <ul id="actions-menu" class="actions-menu" hidden>
+        <li><button id="download-json" type="button">Download .json</button></li>
+        <li><button type="button" disabled>Download GEDCOM <span class="soon">(Coming soon)</span></button></li>
+        <li><button type="button" disabled>Backup <span class="soon">(Coming soon)</span></button></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <!-- Pan/zoom family-tree canvas. -->
+    <div id="tree-viewport" class="tree-viewport">
+      <div id="tree-world" class="tree-world">
+        <svg id="tree-edges" class="tree-edges" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="tree-nodes" class="tree-nodes"></div>
+      </div>
+
+      <div class="tree-controls">
+        <button id="zoom-in" type="button" title="Zoom in">&plus;</button>
+        <button id="zoom-out" type="button" title="Zoom out">&minus;</button>
+        <button id="zoom-reset" type="button" title="Fit to view">&#8634;</button>
+      </div>
+      <p class="tree-hint">Drag to move &middot; scroll to zoom &middot; click a person to open their page</p>
+    </div>
+
+    <details class="raw-section">
+      <summary>Raw data (JSON)</summary>
+      <pre id="raw-json" class="raw-json"></pre>
+    </details>
+  </main>
+
+  <script src="web/family-tree.js"></script>
+</body>
+</html>

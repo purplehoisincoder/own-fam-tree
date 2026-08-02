@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Person &mdash; Family Tree</title>
+  <!-- This file lives in web/, so data/media paths step up one level (../). -->
+  <link rel="stylesheet" href="detail.css">
+  <script src="../data/family.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="../family-tree.html">&larr; Back to family tree</a>
+  </header>
+
+  <main>
+    <h1 id="person-name">Person</h1>
+
+    <div class="detail-grid">
+      <figure class="photo">
+        <img id="person-photo" alt="Photo">
+      </figure>
+
+      <section>
+        <h2>Details</h2>
+        <pre id="person-json" class="raw-json"></pre>
+      </section>
+    </div>
+  </main>
+
+  <script src="detail.js"></script>
+</body>
+</html>
